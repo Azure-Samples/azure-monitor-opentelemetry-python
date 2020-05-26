@@ -5,8 +5,8 @@ languages:
 - html
 products:
 - azure
-description: "This sample contains a simple Flask application to show how you can instrument the OpenCensus Azure Monitor exporters as well as track telemetry from popular Python libraries via OpenCensus integrations."
-urlFragment: azure-monitor-opencensus-python
+description: "This sample contains a simple Flask application to show how you can instrument the OpenTelemetry Azure Monitor exporters as well as track telemetry from popular Python libraries via OpenTelemetry integrations."
+urlFragment: azure-monitor-opentelemetry-python
 ---
 
 # Flask "To-Do" Sample Application
@@ -34,8 +34,6 @@ SQLALCHEMY_DATABASE_URI = <your-database-URI-here>
 6. Click `Add Item` to add the task. The task will be added under `Incomplete Items`. Adding an item with greater than 10 characters will generate an error.
 7. To utilize the `Save to File` feature, run the endpoint application via `python endpoint.py`. This will run another Flask application with a WSGI server running on http://localhost:5001. Click `Save to File` and all tasks will be written to a file `file.txt` in the `output` folder.
 8. Each task has a `Mark As Complete` button. Clicking it will move the task from incomplete to completed.
-9. You can also hit the `blacklist` url page to see a sample of a page that does not have telemetry being sent (http://localhost:5000/blacklist).
-10. You can also run a command line interface application to hit the endpoints on you Flask application directly. Run `command.py` and follow the prompts accordingly.
 
 ## Types of telemetry sent
 

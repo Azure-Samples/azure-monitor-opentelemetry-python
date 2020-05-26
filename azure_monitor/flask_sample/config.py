@@ -9,5 +9,4 @@ class Config(object):
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     INSTRUMENTATION_KEY = '<your-ikey-here>'
-    CONNECTION_STRING = 'connection_string="InstrumentationKey=' + \
-        INSTRUMENTATION_KEY + '"'
+    CONNECTION_STRING = 'InstrumentationKey=' + INSTRUMENTATION_KEY

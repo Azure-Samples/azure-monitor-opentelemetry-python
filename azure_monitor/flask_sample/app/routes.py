@@ -5,7 +5,7 @@ from flask import flash, make_response, redirect, render_template, request, url_
 
 from app import app, db
 from app.forms import ToDoForm
-from app.metrics import mmap, request_measure, tmap
+from app.metric import entries_counter, testing_labels
 from app.models import Todo
 
 # Hitting any endpoint will track an incoming request (requests)
@@ -55,9 +55,8 @@ def add():
         todo = Todo(text=add_input, complete=False)
         db.session.add(todo)
         db.session.commit()
-        # Records a measure metric to be sent as telemetry (customMetrics)
-        mmap.measure_int_put(request_measure, 1)
-        mmap.record(tmap)
+        # Records a counter metric to be sent as telemetry
+        entries_counter.add(1, testing_labels)
     except Exception:
         return redirect('/error')
     return redirect('/')
