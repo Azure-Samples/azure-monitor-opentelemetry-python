@@ -8,5 +8,6 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    INSTRUMENTATION_KEY = '<your-ikey-here>'
+    INSTRUMENTATION_KEY = os.environ.get('APPINSIGHTS_INSTRUMENTATIONKEY') or \
+        '<your-ikey-here>'
     CONNECTION_STRING = 'InstrumentationKey=' + INSTRUMENTATION_KEY
