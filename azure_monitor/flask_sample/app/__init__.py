@@ -4,7 +4,6 @@ import sys
 from flask import Flask
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from app.metric import meter
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from azure_monitor.export.metrics import AzureMonitorMetricsExporter
@@ -13,7 +12,7 @@ from opentelemetry import metrics, trace
 from opentelemetry.ext.flask import FlaskInstrumentor
 from opentelemetry.ext.sqlalchemy import SQLAlchemyInstrumentor
 from opentelemetry.ext.requests import RequestsInstrumentor
-from opentelemetry.sdk.metrics.export.controller import PushController
+from opentelemetry.sdk.metrics import Counter, MeterProvider
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchExportSpanProcessor
 
@@ -21,9 +20,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 db = SQLAlchemy(app)
-
-# Import here to avoid circular imports
-from app import routes  # noqa isort:skip
 
 # Set global TracerProvider before instrumenting
 trace.set_tracer_provider(TracerProvider())
@@ -44,10 +40,28 @@ trace.get_tracer_provider().add_span_processor(
     BatchExportSpanProcessor(trace_exporter)
 )
 
+# Set global MeterProvider before recording
+metrics.set_meter_provider(MeterProvider())
+
 metrics_exporter = AzureMonitorMetricsExporter(
     connection_string=Config.CONNECTION_STRING
 )
-PushController(meter, metrics_exporter, 10)
+
+meter = metrics.get_meter("ToDoApp")
+metrics.get_meter_provider().start_pipeline(meter, metrics_exporter, 5)
+
+entries_counter = meter.create_metric(
+    name="entries",
+    description="number of entries",
+    unit="1",
+    value_type=int,
+    metric_type=Counter,
+    label_keys=("environment",),
+)
+testing_labels = {"environment": "testing"}
+
+# Import here to avoid circular imports
+from app import routes  # noqa isort:skip
 
 # Processor function for changing the role name of the app
 def callback_function(envelope):
