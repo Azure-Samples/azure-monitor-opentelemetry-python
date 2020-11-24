@@ -6,13 +6,11 @@ from flask import Flask
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
-from azure_monitor.export.metrics import AzureMonitorMetricsExporter
-from azure_monitor.export.trace import AzureMonitorSpanExporter
-from opentelemetry import metrics, trace
-from opentelemetry.ext.flask import FlaskInstrumentor
-from opentelemetry.ext.sqlalchemy import SQLAlchemyInstrumentor
-from opentelemetry.ext.requests import RequestsInstrumentor
-from opentelemetry.sdk.metrics import Counter, MeterProvider
+from microsoft.opentelemetry.exporter.azuremonitor import AzureMonitorSpanExporter
+from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchExportSpanProcessor
 
@@ -40,26 +38,6 @@ trace.get_tracer_provider().add_span_processor(
     BatchExportSpanProcessor(trace_exporter)
 )
 
-# Set global MeterProvider before recording
-metrics.set_meter_provider(MeterProvider())
-
-metrics_exporter = AzureMonitorMetricsExporter(
-    connection_string=Config.CONNECTION_STRING
-)
-
-meter = metrics.get_meter("ToDoApp")
-metrics.get_meter_provider().start_pipeline(meter, metrics_exporter, 5)
-
-entries_counter = meter.create_metric(
-    name="entries",
-    description="number of entries",
-    unit="1",
-    value_type=int,
-    metric_type=Counter,
-    label_keys=("environment",),
-)
-testing_labels = {"environment": "testing"}
-
 # Import here to avoid circular imports
 from app import routes  # noqa isort:skip
 
@@ -70,6 +48,5 @@ def callback_function(envelope):
 
 # Adds the telemetry processors
 trace_exporter.add_telemetry_processor(callback_function)
-metrics_exporter.add_telemetry_processor(callback_function)
 
 app.run(host='localhost', port=5000)
