@@ -1,6 +1,7 @@
+flask >= 2.01
 flask-sqlalchemy >= 2.4.1
 flask-wtf >= 0.14.3
-microsoft-opentelemetry-exporter-azuremonitor == 1.0.0b1
-opentelemetry-instrumentation-flask == 0.15b0
-opentelemetry-instrumentation-requests == 0.15b0
-opentelemetry-instrumentation-sqlalchemy == 0.15b0
+azure-monitor-opentelemetry-exporter ~= 1.0.0
+opentelemetry-instrumentation-flask == 0.24b0
+opentelemetry-instrumentation-requests == 0.24b0
+opentelemetry-instrumentation-sqlalchemy == 0.24b0
