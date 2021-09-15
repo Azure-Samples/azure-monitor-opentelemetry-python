@@ -5,7 +5,7 @@ languages:
 - html
 products:
 - azure
-description: "This sample contains a simple Django application to show a common distributed tracing scenario."
+description: "This sample contains a simple Django application to show a common distributed tracing scenario using HTTP calls."
 urlFragment: azure-monitor-opentelemetry-d
 ---
 
