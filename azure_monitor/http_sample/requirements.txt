@@ -1,0 +1,4 @@
+django >= 3.2.7
+azure-monitor-opentelemetry-exporter ~= 1.0.0
+opentelemetry-instrumentation-django == 0.24b0
+opentelemetry-instrumentation-requests == 0.24b0
